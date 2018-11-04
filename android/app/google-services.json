@@ -1,0 +1,42 @@
+{
+    "project_info": {
+        "project_number": "322298615118",
+        "firebase_url": "https://twfoodtranslations.firebaseio.com",
+        "project_id": "twfoodtranslations",
+        "storage_bucket": "twfoodtranslations.appspot.com"
+    },
+    "client": [
+        {
+            "client_info": {
+                "mobilesdk_app_id": "1:322298615118:android:0b1340d841937195",
+                "android_client_info": {
+                    "package_name": "eu.skijur.twfoodtranslations"
+                }
+            },
+            "oauth_client": [
+                {
+                    "client_id": "322298615118-ehqfuri04puf5h514tgcpgm755e1nkjg.apps.googleusercontent.com",
+                    "client_type": 3
+                }
+            ],
+            "api_key": [
+                {
+                    "current_key": "AIzaSyCqkG9KRTftyfAV5OHeW0NKLD4WBAa9fWk"
+                }
+            ],
+            "services": {
+                "analytics_service": {
+                    "status": 1
+                },
+                "appinvite_service": {
+                    "status": 1,
+                    "other_platform_oauth_client": []
+                },
+                "ads_service": {
+                    "status": 2
+                }
+            }
+        }
+    ],
+    "configuration_version": "1"
+}
