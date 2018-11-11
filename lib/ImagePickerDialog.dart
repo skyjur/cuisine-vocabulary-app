@@ -28,7 +28,8 @@ class ImagePickerDialog extends StatelessWidget {
   }
 
   Future _getImage(ImageSource source) async {
-    onImagePick(await ImagePicker.pickImage(source: source));
+    File img = await ImagePicker.pickImage(source: source);
+    onImagePick(img);
   }
 
   static show(
