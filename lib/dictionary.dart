@@ -13,6 +13,11 @@ class Term {
       @required this.translation,
       @required this.description,
       @required this.imagePath});
+
+  @override
+  String toString() {
+    return 'term: $term';
+  }
 }
 
 const Dictionary = <Term>[
