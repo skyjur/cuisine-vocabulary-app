@@ -16,7 +16,7 @@ class Term {
 
   @override
   String toString() {
-    return 'term: $term';
+    return term;
   }
 }
 
@@ -27,7 +27,6 @@ const Dictionary = <Term>[
       translation: 'Pork-Wonton dry noodle',
       description: '',
       imagePath: 'food_pictures/wonton_pork_dry_noodle.jpg'),
-
   Term(
       term: '滷排骨便當',
       pinYin: 'Lǔ páigǔ biàndang',
@@ -40,14 +39,12 @@ const Dictionary = <Term>[
       translation: 'Fatty-pork bento',
       description: '',
       imagePath: 'food_pictures/fatty_pork_bento.jpg'),
-
   Term(
       term: '招牌便當',
       pinYin: 'Zhāopái biàndang',
       translation: 'Signature bento',
       description: '',
       imagePath: 'food_pictures/signature_bento.jpg'),
-
   Term(
       term: '辣味雞丁便當',
       pinYin: 'Là wèi jī dīng biàndang',
@@ -83,7 +80,7 @@ const Dictionary = <Term>[
       pinYin: 'Zhū xīn tāng',
       translation: 'Pork heart soup',
       description: '',
-      imagePath: 'food_pictures/pork_heart.jpg'),
+      imagePath: 'food_pictures/pork_heart_soup.jpg'),
   Term(
       term: '菜頭魚丸湯',
       pinYin: 'Cài tóu yú wán tāng',
@@ -114,5 +111,4 @@ const Dictionary = <Term>[
       translation: 'Radish soup',
       description: '',
       imagePath: 'food_pictures/radish_soup.jpg'),
-
 ];

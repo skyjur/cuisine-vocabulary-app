@@ -7,9 +7,12 @@ import 'package:twfoodtranslations/ImagePickerDialog.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+// import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/services.dart';
 import 'package:twfoodtranslations/PannedView.dart';
+import 'package:twfoodtranslations/dictionary.dart';
+import 'package:twfoodtranslations/dictionaryMatcher.dart';
+import 'package:twfoodtranslations/dictionarySearch.dart';
 import 'package:twfoodtranslations/utils/text_recognition.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -40,77 +43,78 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   ResultFuture<VisionResult> _result;
   File _image;
-  String _selectedText;
+  Set<TextBlock> _selectedBlocks = Set();
+  final index = DictionaryIndex(Dictionary);
 
   setImage(File image) async {
     setState(() {
       _image = image;
-      _selectedText = null;
       _result = ResultFuture(recognizeText(image.path));
       _result.whenComplete(() => setState(() {}));
+      _selectedBlocks = Set();
     });
   }
 
-  List<Widget> _recognizedTextOverlay(BoxConstraints constraints) {
+  Widget _recognizedTextOverlay(BoxConstraints constraints) {
     if (_result == null) {
-      return [];
+      return Container(width: 0.0, height: 0.0, child: null);
     } else if (_result.isComplete) {
       if (_result.result.isValue) {
-        final result = _result.result.asValue.value;
-        final ratio = constraints.maxWidth.toDouble() / result.imgWidth;
-        return result.blocks
-            .expand((block) => block.lines)
-            .expand((line) => line.elements)
-            .map((elm) {
-          final Rectangle<int> bb = elm.boundingBox;
+        final visionText = _result.result.asValue.value;
+        final ratio = constraints.maxWidth.toDouble() / visionText.imgWidth;
+        final processedResult = dictionaryMatcher(visionText);
+        return Stack(
+            children: processedResult.map((elm) {
           final text = elm.text;
 
           return Positioned(
-              left: bb.left.toDouble() * ratio,
-              top: bb.top.toDouble() * ratio,
+              left: elm.left.toDouble() * ratio,
+              top: elm.top.toDouble() * ratio,
               child: GestureDetector(
                   onTap: () {
                     setState(() {
+                      if (_selectedBlocks.contains(elm)) {
+                        _selectedBlocks.remove(elm);
+                      } else {
+                        _selectedBlocks.add(elm);
+                      }
                       print('selected text: $text');
-                      _selectedText = text;
                     });
                   },
                   child: Container(
-                      width: bb.width.toDouble() * ratio,
-                      height: bb.height.toDouble() * ratio,
+                      width: (elm.right - elm.left).toDouble() * ratio,
+                      height: (elm.bottom - elm.top).toDouble() * ratio,
                       decoration: BoxDecoration(
                           border: Border.all(
-                              color: text == _selectedText
+                              color: _selectedBlocks.contains(elm)
                                   ? Colors.redAccent
-                                  : Colors.blueAccent)),
+                                  : elm.termMatch.length > 0
+                                      ? Colors.greenAccent
+                                      : Colors.blueAccent)),
                       child: null)));
-        }).toList();
+        }).toList());
       } else {
-        return [
-          Center(
-              child: Container(
-                  decoration: BoxDecoration(color: Colors.white),
-                  child: Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text(_result.result.asError.error,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent)),
-                  )))
-        ];
-      }
-    } else {
-      return [
-        Center(
+        return Center(
             child: Container(
-                decoration: BoxDecoration(color: Colors.blueAccent),
+                decoration: BoxDecoration(color: Colors.white),
                 child: Padding(
                   padding: EdgeInsets.all(10.0),
-                  child: Text('Analyzing image...',
+                  child: Text(_result.result.asError.error,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white)),
-                )))
-      ];
+                          fontWeight: FontWeight.bold,
+                          color: Colors.redAccent)),
+                )));
+      }
+    } else {
+      return Center(
+          child: Container(
+              decoration: BoxDecoration(color: Colors.blueAccent),
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text('Analyzing image...',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white)),
+              )));
     }
   }
 
@@ -137,38 +141,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _body() {
     return _image != null
-        ? Container(
-            child: PannedView(
-            key: Key('${_selectedText.hashCode} ${_image.hashCode}'),
-            maxWidth: 1000.0,
-            maxHeight: 1000.0,
-            child: Container(
-                width: 1000.0,
-                height: 1000.0,
-                child: LayoutBuilder(
-                    builder: (context, constraints) => Stack(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                              Container(
-                                child: _showImage(),
-                              ),
-                            ] +
-                            _recognizedTextOverlay(constraints) +
-                            [_selectedWidget()]
-                        //     //     //+_recognizedTextOverlay()
-                        ))),
-          ))
+        ? Stack(children: <Widget>[
+            PannedView(
+              key: Key(_image.path),
+              child: Container(
+                  decoration:
+                      BoxDecoration(border: Border.all(color: Colors.red)),
+                  child: LayoutBuilder(
+                      builder: (context, constraints) => Stack(
+                              // mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                OverflowBox(
+                                    alignment: Alignment.topCenter,
+                                    maxHeight: double.infinity,
+                                    child: _showImage()),
+                                _recognizedTextOverlay(constraints)
+                              ]
+                              //     //     //+_recognizedTextOverlay()
+                              ))),
+            ),
+            _selectionWidget(),
+          ])
         : Center(
             child: Text('No image selected'),
           );
   }
 
   Widget _showImage() {
-    return _image == null ? Text('No image selected!') : Image.file(_image);
+    return _image == null
+        ? Text('No image selected!')
+        : Container(
+            decoration: BoxDecoration(
+                border: Border.all(width: 3.0, color: Colors.black)),
+            child: Image.file(_image));
   }
 
-  Widget _selectedWidget() {
-    return _selectedText == null
+  Widget _selectionWidget() {
+    return _selectedBlocks.length == 0
         ? Container(
             width: 0.0,
             height: 0.0,
@@ -176,13 +185,90 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         : Positioned(
             bottom: 0.0,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.blueAccent)),
-              child: Text(_selectedText),
-            ),
+            child: LayoutBuilder(
+                builder: (context, constraints) => Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.blueAccent)),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Text(
+                                _selectedBlocks.map((elm) => elm.text).join(''),
+                                style: TextStyle(fontSize: 25.0),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: GestureDetector(
+                                      onTap: () => setState(() =>
+                                          _selectedBlocks
+                                              .remove(_selectedBlocks.last)),
+                                      child: Padding(
+                                          padding: EdgeInsets.fromLTRB(
+                                              15.0, 5.0, 15.0, 5.0),
+                                          child: Icon(
+                                            Icons.backspace,
+                                            size: 30.0,
+                                            color: Colors.redAccent,
+                                          ))),
+                                ),
+                              )
+                            ]),
+                            translations()
+                          ]),
+                    )),
           );
+  }
+
+  Widget translations() {
+    String query = _selectedBlocks.map((block) => block.text).join('');
+    List<Term> terms = index.search(query);
+    if (terms.length == 0) {
+      return Container(
+          height: 200.0,
+          child: Center(
+            child: Text('Sorry no dictionary matches found'),
+          ));
+    }
+    return Container(
+        height: 300.0,
+        child: ListView(
+            children: terms
+                .map((t) => Row(children: [
+                      Image.asset(
+                        t.imagePath,
+                        width: 200.0,
+                        height: 200.0,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          _highlight(t.term, query),
+                          Text('${t.pinYin}'),
+                          Text('${t.translation}'),
+                        ],
+                      )
+                    ]))
+                .toList()));
+  }
+
+  _highlight(String text, String query) {
+    return RichText(
+        text: TextSpan(
+            children: text.split('').map((t) {
+      if (query.contains(t)) {
+        return TextSpan(
+            text: t, style: TextStyle(fontSize: 25.0, color: Colors.black));
+      } else {
+        return TextSpan(
+            text: t, style: TextStyle(color: Colors.black45, fontSize: 25.0));
+      }
+    }).toList()));
   }
 }
 
