@@ -55,7 +55,21 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - food_pictures/wonton_pork_dry_noodle.jpg
+    - food_pictures/wonton_pork_dry_noodle.jpg
+    - food_pictures/broil_pork_chop_bento.jpg
+    - food_pictures/fatty_pork_bento.jpg
+    - food_pictures/signature_bento.jpg
+    - food_pictures/spicy_chicken_bento.jpg
+    - food_pictures/chicken_drumstick_bento.jpg
+    - food_pictures/vagetable_bento.jpg
+    - food_pictures/braised_pork_rice_bento.png
+    - food_pictures/pork_intestine_with_pork_blood_soup.jpg
+    - food_pictures/pork_heart_soup.jpg
+    - food_pictures/radish_fish_ball_soup.jpg
+    - food_pictures/vagetable_soup.jpg
+    - food_pictures/fish_ball_soup.jpg
+    - food_pictures/pork_blood_soup.jpg
+    - food_pictures/radish_soup.jpg
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
