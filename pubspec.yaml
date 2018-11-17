@@ -26,6 +26,8 @@ dependencies:
   image: ^2.0.4
   uuid: ^1.0.3
   path_provider: ^0.4.1
+  flutter_native_image:
+    git: https://github.com/btastic/flutter_native_image.git
   photo_view:
     git:
       url: https://github.com/renancaraujo/photo_view.git
