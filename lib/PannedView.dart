@@ -14,52 +14,48 @@ import 'package:photo_view/photo_view.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class PannedView extends StatefulWidget {
-  PannedView({Key key, this.maxHeight, this.maxWidth, this.child})
-      : super(key: key);
+  PannedView({Key key, this.child}) : super(key: key);
 
-  final double maxWidth;
-  final double maxHeight;
   final Widget child;
 
   @override
-  _PannedView createState() => _PannedView(
-      maxWidth: this.maxWidth, maxHeight: this.maxHeight, child: this.child);
+  _PannedView createState() => _PannedView();
 }
 
 class _PannedView extends State<PannedView> {
-  _PannedView({this.maxWidth, this.maxHeight, this.child});
-
-  final Widget child;
-  final double maxWidth;
-  final double maxHeight;
   double _offsetX = 0.0;
   double _offsetY = 0.0;
+  double _offsetStartX = 0.0;
+  double _offsetStartY = 0.0;
   double _scale = 1.0;
-  double _cursorX = 0.0;
-  double _cursorY = 0.0;
+  double _scaleStart = 1.0;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return GestureDetector(
         onScaleStart: (pos) {
-          _cursorX = pos.focalPoint.dx;
-          _cursorY = pos.focalPoint.dy;
+          _offsetStartX = -pos.focalPoint.dx;
+          _offsetStartY = -pos.focalPoint.dy;
+          _scaleStart = _scale;
         },
         onScaleUpdate: (update) {
           setState(() {
             // _offsetX -= _cursorX - update.focalPoint.dx;
             // _offsetY -= _cursorY - update.focalPoint.dy;
             // print('x: $_offsetX y: $_offsetY');
-            _scale = update.scale;
+            _scale = _scaleStart * update.scale;
+            _offsetX = _offsetStartX + update.focalPoint.dx;
+            _offsetY = _offsetStartY + update.focalPoint.dy;
             print(
                 'scale $_scale ${update.focalPoint.dx} ${update.focalPoint.dy} ${update}');
           });
         },
         child: Transform(
-            transform: new Matrix4.diagonal3(Vector3(_scale, _scale, _scale)),
+            transform: Matrix4.diagonal3(Vector3(_scale, _scale, _scale))
+              ..translate(_offsetX, _offsetY),
             alignment: FractionalOffset.center,
-            child: child
+            child: this.widget.child
             // child: Stack(
             //   children: <Widget>[
             //     Positioned(
