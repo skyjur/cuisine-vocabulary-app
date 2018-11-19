@@ -111,4 +111,52 @@ const Dictionary = <Term>[
       translation: 'Radish soup',
       description: '',
       imagePath: 'food_pictures/radish_soup.jpg'),
+  Term(
+      term: '嫩燙白肉片',
+      pinYin: 'Nèn tàng bái ròupiàn',
+      translation: 'Sliced pork',
+      description: '',
+      imagePath: 'food_pictures/pork_sliced.jpg'),
+  Term(
+      term: '麻油豬肝片',
+      pinYin: 'Máyóu zhū gān piàn',
+      translation: 'Sliced Sesame oil pork liver',
+      description: '',
+      imagePath: 'food_pictures/sesame_oil_pork_liver.jpg'),
+  Term(
+      term: '蒜瓣高麗菜',
+      pinYin: 'Suànbàn gāolí cài',
+      translation: 'Cabbage with garlic',
+      description: '',
+      imagePath: 'food_pictures/garlic_cabagge.jpg'),
+  Term(
+      term: '排骨麵',
+      pinYin: 'Páigǔ miàn',
+      translation: 'Pork rib noodle',
+      description: '',
+      imagePath: 'food_pictures/pork_rib_soup.jpg'),
+  Term(
+      term: '焢肉麵',
+      pinYin: 'Kòng ròu miàn',
+      translation: 'Fatty pork noodle',
+      description: '',
+      imagePath: 'food_pictures/fatty_pork_noodle.jpg'),
+  Term(
+      term: '雞腿麵',
+      pinYin: 'jītuǐ miàn',
+      translation: 'Chicken drumstick noodle',
+      description: '',
+      imagePath: 'food_pictures/chicken_drumstick_noodle.jpg'),
+  Term(
+      term: '滷肉飯',
+      pinYin: 'Lǔ ròu fàn',
+      translation: 'Braised pork rice',
+      description: '',
+      imagePath: 'food_pictures/braised_pork_rice.jpg'),
+  Term(
+      term: '菜頭湯',
+      pinYin: 'Cài tóu tāng',
+      translation: 'Radish soup',
+      description: '',
+      imagePath: 'food_pictures/radish_soup.jpg'),
 ];
