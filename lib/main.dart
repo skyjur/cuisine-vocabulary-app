@@ -239,12 +239,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(
             children: terms
                 .map((t) => Row(children: [
-                      Image.asset(
-                        t.imagePath,
-                        width: 200.0,
-                        height: 200.0,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 0.0),
+                        child: Image.asset(
+                          t.imagePath,
+                          width: 200.0,
+                          height: 200.0,
+                        ),
                       ),
-                      Column(
+                      Expanded(
+                          child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -252,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Text('${t.pinYin}'),
                           Text('${t.translation}'),
                         ],
-                      )
+                      ))
                     ]))
                 .toList()));
   }
