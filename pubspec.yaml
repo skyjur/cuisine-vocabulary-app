@@ -72,6 +72,13 @@ flutter:
     - food_pictures/fish_ball_soup.jpg
     - food_pictures/pork_blood_soup.jpg
     - food_pictures/radish_soup.jpg
+    - food_pictures/pork_sliced.jpg
+    - food_pictures/sesame_oil_pork_liver.jpg
+    - food_pictures/garlic_cabagge.jpg
+    - food_pictures/pork_rib_soup.jpg
+    - food_pictures/fatty_pork_noodle.jpg
+    - food_pictures/chicken_drumstick_noodle.jpg
+    - food_pictures/braised_pork_rice.jpg
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
