@@ -13,7 +13,7 @@ class TermScore implements Comparable<TermScore> {
         score += 1;
       }
     }
-    return score;
+    return score * 10 + (10 - term.term.length);
   }
 
   int compareTo(TermScore other) {
@@ -22,7 +22,7 @@ class TermScore implements Comparable<TermScore> {
 
   bool passMark() {
     // at least half characters should match query:
-    return score > (query.length ~/ 2);
+    return (score ~/ 10) > (query.length ~/ 2);
   }
 }
 

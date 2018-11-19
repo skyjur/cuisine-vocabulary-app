@@ -13,7 +13,8 @@ void main() {
   final term3 = makeTerm('肉燥');
   final term4 = makeTerm('肉燥櫻花咖哩');
   final term5 = makeTerm('黃金');
-  final dictionary = [term1, term2, term3, term4, term5];
+  final term6 = makeTerm('咖');
+  final dictionary = [term1, term2, term3, term4, term5, term6];
   final index = DictionaryIndex(dictionary);
 
   test("No results", () {
@@ -25,6 +26,11 @@ void main() {
   });
 
   test("Better match first", () {
+    // term6 shoudn't show up here because less than half characters are matched:
     expect(index.search('花咖哩'), [term2, term4, term1]);
+  });
+
+  test("Shortest match first", () {
+    expect(index.search('咖'), [term6, term1, term2, term4]);
   });
 }
