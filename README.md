@@ -1,8 +1,7 @@
 # twfoodtranslations
 
-A new Flutter project.
+Goal is to make a dictionary for taiwanese/hong-kong/chinese dining dictionary that includes OCR scanner to scan the menu and translations would include pictures as well as detailed explanation.
 
-## Getting Started
+Very early work in-progress.
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+![](demo.png)
