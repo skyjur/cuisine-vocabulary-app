@@ -27,23 +27,32 @@ class TextBlock {
 
 List<TextBlock> dictionaryMatcher(VisionText visionText) {
   var result = <TextBlock>[];
-
+  var i = 1;
   for (var block in visionText.blocks) {
     for (var fullLine in block.lines) {
       for (var elm in fullLine.elements) {
-        print(
-            '${elm.text} ${elm.boundingBox.top}x${elm.boundingBox.left} ${elm.boundingBox.width}x${elm.boundingBox.height}');
+        // remove all ASCII symbols - we only care about chinese characters:
+        final text = cleanText(elm.text);
 
-        result.add(TextBlock(
-            text: elm.text,
-            top: elm.boundingBox.top,
-            left: elm.boundingBox.left,
-            bottom: elm.boundingBox.bottom,
-            right: elm.boundingBox.right,
-            termMatch:
-                Dictionary.where((t) => t.term.contains(elm.text)).toList()));
+        if (text != '') {
+          print(
+              '$text ${elm.boundingBox.top}x${elm.boundingBox.left} ${elm.boundingBox.width}x${elm.boundingBox.height}');
+
+          result.add(TextBlock(
+              text: text,
+              top: elm.boundingBox.top,
+              left: elm.boundingBox.left,
+              bottom: elm.boundingBox.bottom,
+              right: elm.boundingBox.right,
+              termMatch:
+                  Dictionary.where((t) => t.term.contains(text)).toList()));
+        }
       }
     }
   }
   return result;
+}
+
+String cleanText(String text) {
+  return text.replaceAll(RegExp(r'[^\u4E00-\u9FA5]'), '').trim();
 }
