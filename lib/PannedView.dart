@@ -1,16 +1,4 @@
-import 'dart:io';
-import 'dart:math';
-
-import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:twfoodtranslations/ImagePickerDialog.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'package:flutter/services.dart';
-import 'package:twfoodtranslations/utils/text_recognition.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class PannedView extends StatefulWidget {
@@ -32,7 +20,6 @@ class _PannedView extends State<PannedView> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return GestureDetector(
         onScaleStart: (pos) {
           _offsetStartX = _offsetX - pos.focalPoint.dx;
