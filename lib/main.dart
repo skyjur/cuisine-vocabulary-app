@@ -3,13 +3,14 @@ import 'dart:math';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:twfoodtranslations/DrawingOverlay.dart';
 import 'package:twfoodtranslations/ImagePickerDialog.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 // import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/services.dart';
-import 'package:twfoodtranslations/PannedView.dart';
+import 'package:twfoodtranslations/ZoomView.dart';
 import 'package:twfoodtranslations/dictionary.dart';
 import 'package:twfoodtranslations/dictionaryMatcher.dart';
 import 'package:twfoodtranslations/dictionarySearch.dart';
@@ -60,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return Container(width: 0.0, height: 0.0, child: null);
     } else if (_result.isComplete) {
       if (_result.result.isValue) {
+        var index = 1;
         final visionText = _result.result.asValue.value;
         final ratio = constraints.maxWidth.toDouble() / visionText.imgWidth;
         final processedResult = dictionaryMatcher(visionText);
@@ -91,7 +93,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                   : elm.termMatch.length > 0
                                       ? Colors.greenAccent
                                       : Colors.blueAccent)),
-                      child: null)));
+                      child: null
+                      // Text(
+                      //     (index++).toString(),
+                      //     style: TextStyle(
+                      //         fontSize: 7,
+                      //         color: Colors.red,
+                      //         background: (Paint()..color = Colors.white)),
+                      //   )
+                      )));
         }).toList());
       } else {
         return Center(
@@ -142,11 +152,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _body() {
     return _image != null
         ? Stack(children: <Widget>[
-            PannedView(
+            ZoomView(
               key: Key(_image.path),
               child: Container(
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.red)),
                   child: LayoutBuilder(
                       builder: (context, constraints) => Stack(
                               // mainAxisAlignment: MainAxisAlignment.center,
@@ -173,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
         : Container(
             decoration: BoxDecoration(
                 border: Border.all(width: 3.0, color: Colors.black)),
-            child: Image.file(_image));
+            child: DrawingOverlay(child: Image.file(_image)));
   }
 
   Widget _selectionWidget() {
