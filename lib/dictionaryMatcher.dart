@@ -54,5 +54,8 @@ List<TextBlock> dictionaryMatcher(VisionText visionText) {
 }
 
 String cleanText(String text) {
-  return text.replaceAll(RegExp(r'[^\u4E00-\u9FA5]'), '').trim();
+  return text
+      .replaceAll(RegExp(r'[^\u4E00-\u9FA5]'), '')
+      .replaceAll('一', '')
+      .trim();
 }
