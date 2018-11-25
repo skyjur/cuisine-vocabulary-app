@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-class PannedView extends StatefulWidget {
-  PannedView({Key key, this.child}) : super(key: key);
+class ZoomView extends StatefulWidget {
+  ZoomView({Key key, this.child}) : super(key: key);
 
   final Widget child;
 
   @override
-  _PannedView createState() => _PannedView();
+  _ZoomView createState() => _ZoomView();
 }
 
-class _PannedView extends State<PannedView> {
+class _ZoomView extends State<ZoomView> {
   double _offsetX = 0.0;
   double _offsetY = 0.0;
   double _offsetStartX = 0.0;
@@ -34,8 +34,8 @@ class _PannedView extends State<PannedView> {
             _scale = _scaleStart * update.scale;
             _offsetX = _offsetStartX + (update.focalPoint.dx);
             _offsetY = _offsetStartY + (update.focalPoint.dy);
-            print(
-                'scale $_scale ${update.focalPoint.dx} ${update.focalPoint.dy} $update');
+            // print(
+            //     'scale $_scale ${update.focalPoint.dx} ${update.focalPoint.dy} $update');
           });
         },
         child: Transform(
