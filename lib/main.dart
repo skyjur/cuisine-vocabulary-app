@@ -1,21 +1,16 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:twfoodtranslations/DrawingOverlay.dart';
+import 'package:twfoodtranslations/RecognizedTextOverlay.dart';
+import 'package:twfoodtranslations/RecognizedTextPainter.dart';
+import 'package:twfoodtranslations/TouchHighlight.dart';
 import 'package:twfoodtranslations/ImagePickerDialog.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'package:flutter/services.dart';
 import 'package:twfoodtranslations/ZoomView.dart';
 import 'package:twfoodtranslations/dictionary.dart';
-import 'package:twfoodtranslations/dictionaryMatcher.dart';
 import 'package:twfoodtranslations/dictionarySearch.dart';
 import 'package:twfoodtranslations/utils/text_recognition.dart';
-import 'package:photo_view/photo_view.dart';
 
 void main() => runApp(new MyApp());
 
@@ -42,10 +37,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ResultFuture<VisionResult> _result;
+  ResultFuture<RecognizedText> _result;
   File _image;
-  Set<TextBlock> _selectedBlocks = Set();
+  Set<NormalizedTextBlock> _selectedBlocks = Set();
   final index = DictionaryIndex(Dictionary);
+
+  double _currentScale = 1.0;
 
   setImage(File image) async {
     setState(() {
@@ -56,76 +53,46 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Widget _recognizedTextOverlay(BoxConstraints constraints) {
-    if (_result == null) {
-      return Container(width: 0.0, height: 0.0, child: null);
-    } else if (_result.isComplete) {
-      if (_result.result.isValue) {
-        var index = 1;
-        final visionText = _result.result.asValue.value;
-        final ratio = constraints.maxWidth.toDouble() / visionText.imgWidth;
-        final processedResult = dictionaryMatcher(visionText);
-        return Stack(
-            children: processedResult.map((elm) {
-          final text = elm.text;
+  _onTextElementSelect(NormalizedTextBlock elm) {
+    setState(() {
+      _selectedBlocks.add(elm);
+    });
+  }
 
-          return Positioned(
-              left: elm.left.toDouble() * ratio,
-              top: elm.top.toDouble() * ratio,
-              child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (_selectedBlocks.contains(elm)) {
-                        _selectedBlocks.remove(elm);
-                      } else {
-                        _selectedBlocks.add(elm);
-                      }
-                      print('selected text: $text');
-                    });
-                  },
-                  child: Container(
-                      width: (elm.right - elm.left).toDouble() * ratio,
-                      height: (elm.bottom - elm.top).toDouble() * ratio,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: _selectedBlocks.contains(elm)
-                                  ? Colors.redAccent
-                                  : elm.termMatch.length > 0
-                                      ? Colors.greenAccent
-                                      : Colors.blueAccent)),
-                      child: null
-                      // Text(
-                      //     (index++).toString(),
-                      //     style: TextStyle(
-                      //         fontSize: 7,
-                      //         color: Colors.red,
-                      //         background: (Paint()..color = Colors.white)),
-                      //   )
-                      )));
-        }).toList());
+  Widget _recognizedTextOverlay() {
+    return RecognizedTextOverlay(
+      visionResult: _result.result.asValue.value,
+      selectedBlocks: _selectedBlocks,
+      onSelect: _onTextElementSelect,
+    );
+  }
+
+  Widget _showWaiting() {
+    if (_result.isComplete) {
+      if (_result.result.isValue) {
+        assert(false);
       } else {
         return Center(
             child: Container(
                 decoration: BoxDecoration(color: Colors.white),
                 child: Padding(
                   padding: EdgeInsets.all(10.0),
-                  child: Text(_result.result.asError.error,
+                  child: Text(_result.result.asError.error.toString(),
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.redAccent)),
                 )));
       }
-    } else {
-      return Center(
-          child: Container(
-              decoration: BoxDecoration(color: Colors.blueAccent),
-              child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Text('Analyzing image...',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white)),
-              )));
     }
+    return Center(
+        child: Container(
+            decoration: BoxDecoration(color: Colors.blueAccent),
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text('Analyzing image...',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white)),
+            )));
   }
 
   @override
@@ -152,22 +119,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _body() {
     return _image != null
         ? Stack(children: <Widget>[
-            ZoomView(
-              key: Key(_image.path),
-              child: Container(
-                  child: LayoutBuilder(
-                      builder: (context, constraints) => Stack(
-                              // mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                OverflowBox(
-                                    alignment: Alignment.topCenter,
-                                    maxHeight: double.infinity,
-                                    child: _showImage()),
-                                _recognizedTextOverlay(constraints)
-                              ]
-                              //     //     //+_recognizedTextOverlay()
-                              ))),
-            ),
+            _result.isComplete && _result.result.isValue
+                ? ZoomView(
+                    key: Key(_image.path),
+                    centerAt: _centerAt,
+                    onScaleUpdate: (scale) {
+                      _currentScale = scale;
+                    },
+                    child: _showResult())
+                : _showWaiting(),
             _selectionWidget(),
           ])
         : Center(
@@ -175,61 +135,85 @@ class _MyHomePageState extends State<MyHomePage> {
           );
   }
 
-  Widget _showImage() {
-    return _image == null
-        ? Text('No image selected!')
-        : Container(
-            decoration: BoxDecoration(
-                border: Border.all(width: 3.0, color: Colors.black)),
-            child: DrawingOverlay(child: Image.file(_image)));
+  double _getStrokeWidth() {
+    return 20.0 / _currentScale;
+  }
+
+  Widget _showResult() {
+    assert(_image != null);
+    assert(_result.isComplete);
+    assert(_result.result.isValue);
+    return FittedBox(
+        fit: BoxFit.scaleDown,
+        child: TouchHighlight(
+          getStrokeWidth: _getStrokeWidth,
+          child: CustomPaint(
+              foregroundPainter: RecognizedTextOverlayPainter(
+                  _result.result.asValue.value, _selectedBlocks),
+              child: Image.file(_result.result.asValue.value.image)),
+          onHighlightMove: onHightlightMove,
+          onHighlightReset: onHighlightReset,
+          onHighlightEnd: onHighlightEnd,
+        ));
   }
 
   Widget _selectionWidget() {
-    return _selectedBlocks.length == 0
-        ? Container(
-            width: 0.0,
-            height: 0.0,
-            child: null,
-          )
-        : Positioned(
-            bottom: 0.0,
-            child: LayoutBuilder(
-                builder: (context, constraints) => Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.blueAccent)),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(children: [
-                              Text(
-                                _selectedBlocks.map((elm) => elm.text).join(''),
-                                style: TextStyle(fontSize: 25.0),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  alignment: Alignment.centerRight,
-                                  child: GestureDetector(
-                                      onTap: () => setState(() =>
-                                          _selectedBlocks
-                                              .remove(_selectedBlocks.last)),
-                                      child: Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              15.0, 5.0, 15.0, 5.0),
-                                          child: Icon(
-                                            Icons.backspace,
-                                            size: 30.0,
-                                            color: Colors.redAccent,
-                                          ))),
+    return Positioned(
+      bottom: 0.0,
+      child: LayoutBuilder(
+          builder: (context, constraints) => Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black,
+                        blurRadius: 20.0,
+                      )
+                    ]),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _highlightIsMoving || _selectedBlocks.length == 0
+                        ? [
+                            Container(
+                                height: 80,
+                                child: Center(child: Text("No selection")))
+                          ]
+                        : [
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Color.fromARGB(200, 220, 220, 220)),
+                              child: Row(children: [
+                                Text(
+                                  _selectedBlocks
+                                      .map((elm) => elm.text)
+                                      .join(''),
+                                  style: TextStyle(fontSize: 25.0),
                                 ),
-                              )
-                            ]),
+                                Expanded(
+                                  child: Container(
+                                    alignment: Alignment.centerRight,
+                                    child: GestureDetector(
+                                        onTap: () => setState(() =>
+                                            _selectedBlocks
+                                                .remove(_selectedBlocks.last)),
+                                        child: Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                15.0, 5.0, 15.0, 5.0),
+                                            child: Icon(
+                                              Icons.backspace,
+                                              size: 30.0,
+                                              color: Colors.redAccent,
+                                            ))),
+                                  ),
+                                )
+                              ]),
+                            ),
                             translations()
                           ]),
-                    )),
-          );
+              )),
+    );
   }
 
   Widget translations() {
@@ -244,17 +228,18 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     return Container(
         height: 300.0,
-        child: ListView(
-            children: terms
-                .map((t) => Row(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 0.0),
-                        child: Image.asset(
-                          t.imagePath,
-                          width: 200.0,
-                          height: 200.0,
-                        ),
-                      ),
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: terms.length,
+            itemBuilder: (context, i) {
+              final t = terms[i];
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(t.imagePath, width: 300.0, height: 200.0),
                       Expanded(
                           child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -265,8 +250,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           Text('${t.translation}'),
                         ],
                       ))
-                    ]))
-                .toList()));
+                    ]),
+              );
+            }));
   }
 
   _highlight(String text, String query) {
@@ -281,6 +267,47 @@ class _MyHomePageState extends State<MyHomePage> {
             text: t, style: TextStyle(color: Colors.black45, fontSize: 25.0));
       }
     }).toList()));
+  }
+
+  Offset _lastMove;
+  bool _highlightIsMoving = false;
+  void onHightlightMove(Offset position, double radius) {
+    if (!_highlightIsMoving) {
+      setState(() {
+        _highlightIsMoving = true;
+      });
+    }
+    if (_lastMove == null ||
+        (_lastMove - position).distanceSquared > (radius * radius / 4)) {
+      _lastMove = position;
+      for (var obj
+          in _result.result.asValue.value.findInRadius(position, radius / 2)) {
+        if (!_selectedBlocks.contains(obj)) {
+          setState(() {
+            _selectedBlocks.add(obj);
+          });
+        }
+      }
+    }
+  }
+
+  void onHighlightReset() {
+    setState(() {
+      _selectedBlocks.clear();
+      _highlightIsMoving = false;
+      _lastMove = null;
+    });
+  }
+
+  Offset _centerAt = null;
+  void onHighlightEnd() {
+    setState(() {
+      if (_lastMove != null) {
+        _centerAt = _lastMove;
+      }
+      _highlightIsMoving = false;
+      _lastMove = null;
+    });
   }
 }
 

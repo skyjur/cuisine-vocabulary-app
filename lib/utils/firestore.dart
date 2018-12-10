@@ -10,6 +10,6 @@ StorageUploadTask uploadToFirestore(File fileToUpload) {
       .child('public')
       .child('uploads')
       .child(uuid);
-  print('Ref: ' + ref.path);
+  // print('Ref: ' + ref.path);
   return ref.putFile(fileToUpload);
 }
