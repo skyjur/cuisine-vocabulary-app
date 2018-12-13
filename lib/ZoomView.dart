@@ -42,7 +42,7 @@ class _ZoomView extends State<ZoomView> {
             child: Transform(
                 transform: Matrix4.diagonal3(Vector3(_scale, _scale, _scale))
                   ..translate(_offsetX / _scale, _offsetY / _scale),
-                //alignment: FractionalOffset.topLeft,
+                alignment: FractionalOffset.center,
                 child: widget.child)));
   }
 
@@ -54,7 +54,7 @@ class _ZoomView extends State<ZoomView> {
 
   void _onScaleUpdate(ScaleEventUpdate event) {
     setState(() {
-      _scale = min(max(_scaleStart * event.scale, 0.75), 2.0);
+      _scale = min(max(_scaleStart * event.scale, 1.0), 3.0);
       _offsetX = _offsetStartX + event.offset.dx;
       _offsetY = _offsetStartY + event.offset.dy;
     });

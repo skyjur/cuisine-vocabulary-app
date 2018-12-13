@@ -72,7 +72,7 @@ Future<RecognizedText> recognizeText(String inputFilePath) async {
   final inputImageSize =
       await FlutterNativeImage.getImageProperties(inputFilePath);
   final ratio =
-      max((inputImageSize.width * inputImageSize.height) / (2000 * 2000), 1);
+      max((inputImageSize.width * inputImageSize.height) / (2000 * 2000), 1.0);
   int targetWidth = inputImageSize.width ~/ ratio;
   int targetHeight = inputImageSize.height ~/ ratio;
   final resultImage = await FlutterNativeImage.compressImage(inputFilePath,

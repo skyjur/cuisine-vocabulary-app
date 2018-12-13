@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:twfoodtranslations/NoSelection.dart';
 import 'package:twfoodtranslations/RecognizedTextOverlay.dart';
 import 'package:twfoodtranslations/RecognizedTextPainter.dart';
+import 'package:twfoodtranslations/SelectedTextBar.dart';
+import 'package:twfoodtranslations/TermBlock.dart';
 import 'package:twfoodtranslations/TouchHighlight.dart';
 import 'package:twfoodtranslations/ImagePickerDialog.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -39,7 +44,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   ResultFuture<RecognizedText> _result;
   File _image;
-  Set<NormalizedTextBlock> _selectedBlocks = Set();
+  List<NormalizedTextBlock> _selectedBlocks = List();
   final index = DictionaryIndex(Dictionary);
 
   double _currentScale = 1.0;
@@ -49,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _image = image;
       _result = ResultFuture(recognizeText(image.path));
       _result.whenComplete(() => setState(() {}));
-      _selectedBlocks = Set();
+      _selectedBlocks = List();
     });
   }
 
@@ -118,18 +123,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _body() {
     return _image != null
-        ? Stack(children: <Widget>[
-            _result.isComplete && _result.result.isValue
-                ? ZoomView(
-                    key: Key(_image.path),
-                    centerAt: _centerAt,
-                    onScaleUpdate: (scale) {
-                      _currentScale = scale;
-                    },
-                    child: _showResult())
-                : _showWaiting(),
-            _selectionWidget(),
-          ])
+        ? Stack(
+            children: _result.isComplete && _result.result.isValue
+                ? [
+                    ZoomView(
+                        key: Key(_image.path),
+                        centerAt: _centerAt,
+                        onScaleUpdate: (scale) {
+                          _currentScale = scale;
+                        },
+                        child: Container(child: _showResult())),
+                    _selectionWidget()
+                  ]
+                : [_showWaiting()])
         : Center(
             child: Text('No image selected'),
           );
@@ -163,71 +169,57 @@ class _MyHomePageState extends State<MyHomePage> {
       child: LayoutBuilder(
           builder: (context, constraints) => Container(
                 width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 20.0,
-                      )
-                    ]),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _highlightIsMoving || _selectedBlocks.length == 0
-                        ? [
-                            Container(
-                                height: 80,
-                                child: Center(child: Text("No selection")))
-                          ]
-                        : [
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: Color.fromARGB(200, 220, 220, 220)),
-                              child: Row(children: [
-                                Text(
-                                  _selectedBlocks
-                                      .map((elm) => elm.text)
-                                      .join(''),
-                                  style: TextStyle(fontSize: 25.0),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.centerRight,
-                                    child: GestureDetector(
-                                        onTap: () => setState(() =>
-                                            _selectedBlocks
-                                                .remove(_selectedBlocks.last)),
-                                        child: Padding(
-                                            padding: EdgeInsets.fromLTRB(
-                                                15.0, 5.0, 15.0, 5.0),
-                                            child: Icon(
-                                              Icons.backspace,
-                                              size: 30.0,
-                                              color: Colors.redAccent,
-                                            ))),
-                                  ),
-                                )
+                child: Container(
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(color: Colors.black, blurRadius: 20)
+                  ]),
+                  child: Container(
+                    color: Colors.white,
+                    child: _highlightIsMoving || _selectedBlocks.length == 0
+                        ? NoSelection()
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                                SelectedTextBar(
+                                    _selectedBlocks
+                                        .map((block) => block.text)
+                                        .join(""),
+                                    onRemoveClick: removeLastSelection),
+                                translations()
                               ]),
-                            ),
-                            translations()
-                          ]),
+                  ),
+                ),
               )),
     );
+  }
+
+  removeLastSelection() {
+    setState(() {
+      _selectedBlocks.removeLast();
+    });
   }
 
   Widget translations() {
     String query = _selectedBlocks.map((block) => block.text).join('');
     List<Term> terms = index.search(query);
     if (terms.length == 0) {
-      return Container(
-          height: 200.0,
+      return Padding(
+          padding: EdgeInsets.all(50),
           child: Center(
-            child: Text('Sorry no dictionary matches found'),
-          ));
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                Text('Translation not available for:'),
+                Text(
+                  _selectedBlocks.map((block) => block.text).join(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ])));
     }
     return Container(
-        height: 300.0,
+        height: 350.0,
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: terms.length,
@@ -235,38 +227,9 @@ class _MyHomePageState extends State<MyHomePage> {
               final t = terms[i];
               return Padding(
                 padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.asset(t.imagePath, width: 300.0, height: 200.0),
-                      Expanded(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          _highlight(t.term, query),
-                          Text('${t.pinYin}'),
-                          Text('${t.translation}'),
-                        ],
-                      ))
-                    ]),
+                child: TermBlock(t, query),
               );
             }));
-  }
-
-  _highlight(String text, String query) {
-    return RichText(
-        text: TextSpan(
-            children: text.split('').map((t) {
-      if (query.contains(t)) {
-        return TextSpan(
-            text: t, style: TextStyle(fontSize: 25.0, color: Colors.black));
-      } else {
-        return TextSpan(
-            text: t, style: TextStyle(color: Colors.black45, fontSize: 25.0));
-      }
-    }).toList()));
   }
 
   Offset _lastMove;
@@ -307,6 +270,15 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       _highlightIsMoving = false;
       _lastMove = null;
+      if (_selectedBlocks.length > 0) {
+        final text =
+            _selectedBlocks.map((block) => block.text).toList().join(' ');
+        final data = {"text": text};
+        http.post("https://skijur.com/highlighted-text-log",
+            headers: {"content-type": "application/json"},
+            body: jsonEncode(data),
+            encoding: Utf8Codec());
+      }
     });
   }
 }

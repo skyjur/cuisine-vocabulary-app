@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:twfoodtranslations/dictionary.dart';
 
 class TermScore implements Comparable<TermScore> {
@@ -7,13 +9,11 @@ class TermScore implements Comparable<TermScore> {
   TermScore(this.term, this.query) : this.score = _calcScore(term, query);
 
   static _calcScore(Term term, String query) {
-    int score = 0;
-    for (var char in query.split('')) {
-      if (term.term.contains(char)) {
-        score += 1;
-      }
+    if (query.contains(term.term)) {
+      return (term.term.length * 2 + query.length - query.indexOf(term.term)) *
+          10;
     }
-    return score * 10 + (10 - term.term.length);
+    return 0;
   }
 
   int compareTo(TermScore other) {
@@ -22,7 +22,7 @@ class TermScore implements Comparable<TermScore> {
 
   bool passMark() {
     // at least half characters should match query:
-    return (score ~/ 10) > (query.length ~/ 2);
+    return score >= 1;
   }
 }
 
@@ -38,6 +38,16 @@ class DictionaryIndex {
         .where((TermScore s) => s.passMark())
         .toList()
           ..sort();
+
+    for (var i = 1; i < sortedScores.length; i++) {
+      var t = sortedScores[i].term.term;
+      for (var j = i - 1; j >= 0; j--) {
+        if (sortedScores[j].term.term.contains(t)) {
+          sortedScores[i].score ~/= 2;
+        }
+      }
+    }
+    sortedScores.sort();
     return sortedScores.map((score) => score.term).toList();
   }
 }

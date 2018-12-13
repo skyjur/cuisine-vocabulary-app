@@ -5,7 +5,7 @@ class RecognizedTextOverlayPainter extends CustomPainter {
   RecognizedTextOverlayPainter(this.visionResult, this.selectedBlocks);
 
   final RecognizedText visionResult;
-  final Set<NormalizedTextBlock> selectedBlocks;
+  final Iterable<NormalizedTextBlock> selectedBlocks;
 
   @override
   bool shouldRepaint(RecognizedTextOverlayPainter oldDelegate) {
@@ -22,11 +22,11 @@ class RecognizedTextOverlayPainter extends CustomPainter {
       final isSelected = selectedBlocks.contains(block);
 
       final path = Path()
-        ..moveTo(block.left * w, block.top * h)
-        ..lineTo(block.right * w, block.top * h)
-        ..lineTo(block.right * w, block.bottom * h)
-        ..lineTo(block.left * w, block.bottom * h)
-        ..lineTo(block.left * w, block.top * h);
+        ..moveTo(block.left, block.top)
+        ..lineTo(block.right, block.top)
+        ..lineTo(block.right, block.bottom)
+        ..lineTo(block.left, block.bottom)
+        ..lineTo(block.left, block.top);
 
       canvas.drawPath(
           path,

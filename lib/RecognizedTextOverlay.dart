@@ -8,7 +8,7 @@ class RecognizedTextOverlay extends StatelessWidget {
       : super(key: key);
 
   final RecognizedText visionResult;
-  final Set<NormalizedTextBlock> selectedBlocks;
+  final Iterable<NormalizedTextBlock> selectedBlocks;
   final void Function(NormalizedTextBlock text) onSelect;
 
   Widget build(BuildContext context) {
