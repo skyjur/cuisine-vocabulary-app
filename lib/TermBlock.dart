@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:twfoodtranslations/dictionary.dart';
+import 'package:foodvocabularyapp/dictionary.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class TermBlock extends StatelessWidget {

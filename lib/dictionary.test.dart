@@ -1,5 +1,5 @@
 import "package:test/test.dart";
-import 'package:twfoodtranslations/dictionary.dart';
+import 'package:foodvocabularyapp/dictionary.dart';
 
 Term makeTerm(String term) {
   return Term(

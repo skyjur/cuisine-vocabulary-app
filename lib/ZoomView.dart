@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:twfoodtranslations/TwoPointScaleRecognizer.dart';
+import 'package:foodvocabularyapp/TwoPointScaleRecognizer.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 typedef Widget ScaledChildBuilder(double scale);

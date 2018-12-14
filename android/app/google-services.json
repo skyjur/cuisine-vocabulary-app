@@ -10,7 +10,7 @@
             "client_info": {
                 "mobilesdk_app_id": "1:322298615118:android:0b1340d841937195",
                 "android_client_info": {
-                    "package_name": "eu.skijur.twfoodtranslations"
+                    "package_name": "com.skijur.foodvocabularyapp"
                 }
             },
             "oauth_client": [

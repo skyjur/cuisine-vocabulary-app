@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:twfoodtranslations/dictionary.dart';
+import 'package:foodvocabularyapp/dictionary.dart';
 
 void main() async {
   final dict = await loadDictionary();

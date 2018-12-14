@@ -1,4 +1,4 @@
-package eu.skijur.twfoodtranslations;
+package com.skijur.foodvocabularyapp;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

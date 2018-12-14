@@ -4,16 +4,16 @@ import 'dart:io';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:twfoodtranslations/NoSelection.dart';
-import 'package:twfoodtranslations/RecognizedTextOverlay.dart';
-import 'package:twfoodtranslations/RecognizedTextPainter.dart';
-import 'package:twfoodtranslations/SelectedTextBar.dart';
-import 'package:twfoodtranslations/TermBlock.dart';
-import 'package:twfoodtranslations/TouchHighlight.dart';
-import 'package:twfoodtranslations/ImagePickerDialog.dart';
-import 'package:twfoodtranslations/ZoomView.dart';
-import 'package:twfoodtranslations/dictionary.dart';
-import 'package:twfoodtranslations/utils/text_recognition.dart';
+import 'package:foodvocabularyapp/NoSelection.dart';
+import 'package:foodvocabularyapp/RecognizedTextOverlay.dart';
+import 'package:foodvocabularyapp/RecognizedTextPainter.dart';
+import 'package:foodvocabularyapp/SelectedTextBar.dart';
+import 'package:foodvocabularyapp/TermBlock.dart';
+import 'package:foodvocabularyapp/TouchHighlight.dart';
+import 'package:foodvocabularyapp/ImagePickerDialog.dart';
+import 'package:foodvocabularyapp/ZoomView.dart';
+import 'package:foodvocabularyapp/dictionary.dart';
+import 'package:foodvocabularyapp/utils/text_recognition.dart';
 
 void main() => runApp(new MyApp());
 

@@ -5,9 +5,9 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:twfoodtranslations/dictionary.dart';
+import 'package:foodvocabularyapp/dictionary.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'package:twfoodtranslations/utils/position_index.dart';
+import 'package:foodvocabularyapp/utils/position_index.dart';
 
 // class VisionResult implements VisionText {
 //   // It's important to know width & height of source image to correctly transpose

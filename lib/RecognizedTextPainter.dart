@@ -1,5 +1,5 @@
 import 'package:flutter/rendering.dart';
-import 'package:twfoodtranslations/utils/text_recognition.dart';
+import 'package:foodvocabularyapp/utils/text_recognition.dart';
 
 class RecognizedTextOverlayPainter extends CustomPainter {
   RecognizedTextOverlayPainter(this.visionResult, this.selectedBlocks);
