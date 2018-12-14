@@ -35,6 +35,7 @@ dependencies:
       ref: ml_text_cloud
       path: packages/firebase_ml_vision
   http: any
+  utf: any
 
 dev_dependencies:
   flutter_test:
