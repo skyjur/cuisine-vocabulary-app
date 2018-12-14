@@ -38,6 +38,7 @@ dependencies:
       url: https://github.com/skyjur/plugins.git
       ref: ml_text_cloud
       path: packages/firebase_ml_vision
+  http: any
 
 dev_dependencies:
   flutter_test:
