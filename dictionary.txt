@@ -97,4 +97,9 @@
 麻油豬肝片	Máyóu zhū gān piàn	Sliced Sesame oil pork liver	food_pictures/optimized/sesame_oil_pork_liver.jpg
 麻醬	májiàng	sesame paste sauce	food_pictures/optimized/majiang.jpg
 摩斯	Mó sī	Moss burger (local fast food chain)	food_pictures/optimized/mosburger.jpg
-鱈魚堡	Xuěyú bǎo	Cod burger	food_pictures/optimized/fish_burger.jpg
+鱈魚堡	Xuěyú bǎo	Fish (cod) burger	food_pictures/optimized/fish_burger.jpg
+鮮  xiān    Fresh   food_pictures/optimized/fresh.jpg
+蛋  Dàn Egg food_pictures/hard-boiled-eggs.jpg
+漢堡    Hànbǎo  Burger  food_pictures/optimized/fish_burger.jpg
+溫泉    wēnquán Hot spring  food_pictures/optimized/hotsprings.jpg
+魚  Yú  Fish    food_pictures/optimized/fish.jpg
