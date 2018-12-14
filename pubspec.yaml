@@ -34,7 +34,10 @@ dependencies:
       url: https://github.com/renancaraujo/photo_view.git
       ref: master
   firebase_ml_vision:
-    path: ../flutter-plugins/packages/firebase_ml_vision
+    git:
+      url: https://github.com/skyjur/plugins.git
+      ref: ml_text_cloud
+      path: packages/firebase_ml_vision
 
 dev_dependencies:
   flutter_test:
@@ -61,104 +64,6 @@ flutter:
     - icons/ban.png
     - icons/tap.png
     - icons/zoom-in.png
-    - food_pictures/tricolor_soup.jpg
-    - food_pictures/dry_noodle.jpg
-    - food_pictures/glass_noddle.jpg
-    - food_pictures/cold.jpg
-    - food_pictures/shaved_ice.jpg
-    - food_pictures/ban.png
-    - food_pictures/banjinbanrou.jpg
-    - food_pictures/curry.jpg
-    - food_pictures/da.jpg
-    - food_pictures/pork_intestine_with_pork_blood_soup.jpg
-    - food_pictures/pork_sliced.jpg
-    - food_pictures/xiao.jpg
-    - food_pictures/xiaolong_juicy_dumpling.jpg
-    - food_pictures/wonton.jpeg
-    - food_pictures/wonton-red-sauce.jpg
-    - food_pictures/signature_bento.jpg
-    - food_pictures/pork_rib_soup.jpg
-    - food_pictures/table_number.jpg
-    - food_pictures/small_shrimp.jpg
-    - food_pictures/fried_tofu.jpg
-    - food_pictures/kimchi.jpg
-    - food_pictures/seafood.jpg
-    - food_pictures/soup.jpg
-    - food_pictures/hotsprint_egg.jpg
-    - food_pictures/broil_pork_chop_bento.jpg
-    - food_pictures/braised_meat.jpg
-    - food_pictures/braised_pork_rice.jpg
-    - food_pictures/pork_rice.jpg
-    - food_pictures/braised_pork_rice_bento.png
-    - food_pictures/chicken_drumstick_bento.jpg
-    - food_pictures/deepfry.jpg
-    - food_pictures/zhazhiang.jpg
-    - food_pictures/zhama_paste.jpg
-    - food_pictures/udon_noodle.jpg
-    - food_pictures/fatty_pork_bento.jpg
-    - food_pictures/fatty_pork_noodle.jpg
-    - food_pictures/grill_meat.jpg
-    - food_pictures/grill_pork_rice.jpg
-    - food_pictures/milk.jpg
-    - food_pictures/beef.png
-    - food_pictures/beef_noodle.jpg
-    - food_pictures/beef_soup.jpg
-    - food_pictures/brisket.jpg
-    - food_pictures/bubbetea.jpg
-    - food_pictures/fuzhou_meatball_soup.jpg
-    - food_pictures/kongqingcai.JPG
-    - food_pictures/bamboo_basket.jpg
-    - food_pictures/spicy_oil.jpg
-    - food_pictures/spicy_oil_dumplings.jpg
-    - food_pictures/spicy_oil_noodle_dumplings.jpg
-    - food_pictures/pork.png
-    - food_pictures/braised.jpg
-    - food_pictures/blacktea.jpg
-    - food_pictures/hongdou.jpg
-    - food_pictures/zhonghetang.jpg
-    - food_pictures/meat.jpg
-    - food_pictures/meatball.jpg
-    - food_pictures/oolong_tea.jpg
-    - food_pictures/cai.jpg
-    - food_pictures/vegetable.jpg
-    - food_pictures/radish_soup.jpg
-    - food_pictures/radish_soup.jpg
-    - food_pictures/radish_fish_ball_soup.jpg
-    - food_pictures/vagetable_bento.jpg
-    - food_pictures/garlic_cabagge.jpg
-    - food_pictures/steam.jpg
-    - food_pictures/transparent_dumpling.jpg
-    - food_pictures/coix-seed.jpg
-    - food_pictures/daikon.jpg
-    - food_pictures/soup.jpg
-    - food_pictures/eggsoup.jpg
-    - food_pictures/eggsoup.jpg
-    - food_pictures/honey.jpg
-    - food_pictures/honey_tea.jpg
-    - food_pictures/tofu.jpg
-    - food_pictures/pork_heart_soup.jpg
-    - food_pictures/pork_liver.jpg
-    - food_pictures/pork_blood_soup.jpg
-    - food_pictures/gongmao.jpg
-    - food_pictures/miso.jpg
-    - food_pictures/chili.png
-    - food_pictures/spicy_chicken_bento.jpg
-    - food_pictures/chicken.jpg
-    - food_pictures/chicken_drumstick_noodle.jpg
-    - food_pictures/qingcai.jpg
-    - food_pictures/vagetable_soup.jpg
-    - food_pictures/rice.jpg
-    - food_pictures/wonton.jpeg
-    - food_pictures/wontonsoup.jpg
-    - food_pictures/sausage.jpg
-    - food_pictures/cabbage.jpg
-    - food_pictures/fish_ball_soup.jpg
-    - food_pictures/wonton_pork_dry_noodle.jpg
-    - food_pictures/mian.jpg
-    - food_pictures/sesame_oil_pork_liver.jpg
-    - food_pictures/majiang.jpg
-    - food_pictures/mosburger.jpg
-    - food_pictures/fish_burger.jpg
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
