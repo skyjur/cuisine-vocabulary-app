@@ -1,6 +1,5 @@
 import "package:test/test.dart";
 import 'package:twfoodtranslations/dictionary.dart';
-import 'package:twfoodtranslations/dictionarySearch.dart';
 
 Term makeTerm(String term) {
   return Term(
@@ -15,7 +14,7 @@ void main() {
   final term5 = makeTerm('黃金');
   final term6 = makeTerm('咖');
   final dictionary = [term1, term2, term3, term4, term5, term6];
-  final index = DictionaryIndex(dictionary);
+  final index = Dictionary(dictionary);
 
   test("No results", () {
     expect(index.search('不'), equals([]));

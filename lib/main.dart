@@ -11,10 +11,8 @@ import 'package:twfoodtranslations/SelectedTextBar.dart';
 import 'package:twfoodtranslations/TermBlock.dart';
 import 'package:twfoodtranslations/TouchHighlight.dart';
 import 'package:twfoodtranslations/ImagePickerDialog.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:twfoodtranslations/ZoomView.dart';
 import 'package:twfoodtranslations/dictionary.dart';
-import 'package:twfoodtranslations/dictionarySearch.dart';
 import 'package:twfoodtranslations/utils/text_recognition.dart';
 
 void main() => runApp(new MyApp());
@@ -45,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ResultFuture<RecognizedText> _result;
   File _image;
   List<NormalizedTextBlock> _selectedBlocks = List();
-  final index = DictionaryIndex(Dictionary);
+  final _dictionary = ResultFuture(loadDictionary());
 
   double _currentScale = 1.0;
 
@@ -124,7 +122,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _body() {
     return _image != null
         ? Stack(
-            children: _result.isComplete && _result.result.isValue
+            children: _result.isComplete &&
+                    _result.result.isValue &&
+                    _dictionary.isComplete &&
+                    _dictionary.result.isValue
                 ? [
                     ZoomView(
                         key: Key(_image.path),
@@ -202,7 +203,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget translations() {
     String query = _selectedBlocks.map((block) => block.text).join('');
-    List<Term> terms = index.search(query);
+    List<Term> terms = _dictionary.result.asValue.value.search(query);
     if (terms.length == 0) {
       return Padding(
           padding: EdgeInsets.all(50),
@@ -227,7 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
               final t = terms[i];
               return Padding(
                 padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
-                child: TermBlock(t, query),
+                child: TermBlock(t, query, _dictionary.result.asValue.value),
               );
             }));
   }
@@ -262,7 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Offset _centerAt = null;
+  Offset _centerAt;
   void onHighlightEnd() {
     setState(() {
       if (_lastMove != null) {
@@ -280,96 +281,5 @@ class _MyHomePageState extends State<MyHomePage> {
             encoding: Utf8Codec());
       }
     });
-  }
-}
-
-class UploadTaskListTile extends StatelessWidget {
-  const UploadTaskListTile(
-      {Key key, this.task, this.onDismissed, this.onDownload})
-      : super(key: key);
-
-  final StorageUploadTask task;
-  final VoidCallback onDismissed;
-  final VoidCallback onDownload;
-
-  String get status {
-    String result;
-    if (task.isComplete) {
-      if (task.isSuccessful) {
-        result = 'Complete';
-      } else if (task.isCanceled) {
-        result = 'Canceled';
-      } else {
-        result = 'Failed ERROR: ${task.lastSnapshot.error}';
-      }
-    } else if (task.isInProgress) {
-      result = 'Uploading';
-    } else if (task.isPaused) {
-      result = 'Paused';
-    }
-    return result;
-  }
-
-  String _bytesTransferred(StorageTaskSnapshot snapshot) {
-    return '${snapshot.bytesTransferred}/${snapshot.totalByteCount}';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<StorageTaskEvent>(
-      stream: task.events,
-      builder: (BuildContext context,
-          AsyncSnapshot<StorageTaskEvent> asyncSnapshot) {
-        Widget subtitle;
-        if (asyncSnapshot.hasData) {
-          final StorageTaskEvent event = asyncSnapshot.data;
-          final StorageTaskSnapshot snapshot = event.snapshot;
-          subtitle = Text('$status: ${_bytesTransferred(snapshot)} bytes sent');
-        } else {
-          subtitle = const Text('Starting...');
-        }
-        return Dismissible(
-          key: Key(task.hashCode.toString()),
-          onDismissed: (_) => onDismissed(),
-          child: ListTile(
-            title: Text('Upload Task #${task.hashCode}'),
-            subtitle: subtitle,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Offstage(
-                  offstage: !task.isInProgress,
-                  child: IconButton(
-                    icon: const Icon(Icons.pause),
-                    onPressed: () => task.pause(),
-                  ),
-                ),
-                Offstage(
-                  offstage: !task.isPaused,
-                  child: IconButton(
-                    icon: const Icon(Icons.file_upload),
-                    onPressed: () => task.resume(),
-                  ),
-                ),
-                Offstage(
-                  offstage: task.isComplete,
-                  child: IconButton(
-                    icon: const Icon(Icons.cancel),
-                    onPressed: () => task.cancel(),
-                  ),
-                ),
-                Offstage(
-                  offstage: !(task.isComplete && task.isSuccessful),
-                  child: IconButton(
-                    icon: const Icon(Icons.file_download),
-                    onPressed: onDownload,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 }

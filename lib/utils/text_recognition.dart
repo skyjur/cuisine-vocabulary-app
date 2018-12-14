@@ -121,9 +121,6 @@ class NormalizedTextBlock {
 
   // @override
   // int get hashCode => this.text.hashCode;
-
-  List<Term> get termMatch =>
-      Dictionary.where((t) => t.term.contains(text)).toList();
 }
 
 List<NormalizedTextBlock> normalizeTextBlocks(
