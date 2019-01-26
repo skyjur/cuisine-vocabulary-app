@@ -1,5 +1,6 @@
 import "package:test/test.dart";
-import 'package:foodvocabularyapp/utils/text_recognition.dart';
+import 'package:foodvocabularyapp/service/text_recognition.dart';
+import 'package:foodvocabularyapp/service/text_recognition.dart';
 
 main() {
   test('cleanText()', () {

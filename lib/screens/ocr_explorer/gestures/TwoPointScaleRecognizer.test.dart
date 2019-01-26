@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodvocabularyapp/TwoPointScaleRecognizer.dart';
+import 'package:foodvocabularyapp/screens/ocr_explorer/gestures/TwoPointScaleRecognizer.dart';
 
 main() {
   test('twoPointMoveRecognizer: test1', () async {

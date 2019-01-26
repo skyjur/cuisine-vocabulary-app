@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import "package:test/test.dart";
-import 'package:foodvocabularyapp/utils/position_index.dart';
+import 'package:foodvocabularyapp/service/position_index.dart';
 
 void main() {
   test("Find in radius", () {

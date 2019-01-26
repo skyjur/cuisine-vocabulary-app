@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:foodvocabularyapp/SpeechSpeaker.dart';
 import 'package:foodvocabularyapp/dictionary.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:foodvocabularyapp/ui/usability/speech.dart';
 
 class TermBlock extends StatelessWidget {
   TermBlock(this.term, this.query, this.dictionary);

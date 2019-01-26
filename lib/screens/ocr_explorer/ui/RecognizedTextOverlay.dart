@@ -1,6 +1,6 @@
 // import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-import 'package:foodvocabularyapp/utils/text_recognition.dart';
+import 'package:foodvocabularyapp/service/text_recognition.dart';
 
 class RecognizedTextOverlay extends StatelessWidget {
   RecognizedTextOverlay(
