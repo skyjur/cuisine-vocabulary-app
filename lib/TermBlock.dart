@@ -14,16 +14,31 @@ class TermBlock extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          term.imageUrl != null
-              ? Image.network(term.imageUrl, width: 300, height: 200)
-              : Image.asset("icons/ban.png", width: 300, height: 200),
+          // term.imageUrl != null
+          //     ? Image.network(term.imageUrl, width: 300, height: 200)
+          //     : Image.asset("icons/ban.png", width: 300, height: 200),
+          Container(
+            height: 150,
+            width: 300,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: term.imageUrl != null
+                        ? NetworkImage(term.imageUrl)
+                        : AssetImage("icons/ban.png"))),
+            child: null,
+          ),
           Expanded(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _highlight(term.term, query),
-              Text(term.pinYin),
+              Row(
+                children: <Widget>[
+                  Text(term.term, style: TextStyle(fontSize: 25.0)),
+                  Text(term.pinYin, style: TextStyle(fontSize: 15.0)),
+                ],
+              ),
               Container(
                 width: 300,
                 child: MarkdownBody(
@@ -36,20 +51,6 @@ class TermBlock extends StatelessWidget {
             ],
           ))
         ]);
-  }
-
-  _highlight(String text, String query) {
-    return RichText(
-        text: TextSpan(
-            children: text.split('').map((t) {
-      if (query.contains(t)) {
-        return TextSpan(
-            text: t, style: TextStyle(fontSize: 25.0, color: Colors.black));
-      } else {
-        return TextSpan(
-            text: t, style: TextStyle(color: Colors.black45, fontSize: 25.0));
-      }
-    }).toList()));
   }
 
   void _onTapLink(BuildContext context, String href) {

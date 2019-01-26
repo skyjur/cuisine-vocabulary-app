@@ -220,7 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ])));
     }
     return Container(
-        height: 350.0,
+        height: 250.0,
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: terms.length,
