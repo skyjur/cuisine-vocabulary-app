@@ -62,6 +62,7 @@ flutter:
     - icons/ban.png
     - icons/tap.png
     - icons/zoom-in.png
+    - icons/swipe.png
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
