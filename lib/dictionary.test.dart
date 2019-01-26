@@ -3,7 +3,7 @@ import 'package:foodvocabularyapp/dictionary.dart';
 
 Term makeTerm(String term) {
   return Term(
-      term: term, description: '', pinYin: '', imagePath: '', translation: '');
+      term: term, description: '', pinYin: '', imageUrl: '', translation: '');
 }
 
 void main() {
