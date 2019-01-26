@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodvocabularyapp/SpeechSpeaker.dart';
 import 'package:foodvocabularyapp/dictionary.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -37,6 +38,7 @@ class TermBlock extends StatelessWidget {
                 children: <Widget>[
                   Text(term.term, style: TextStyle(fontSize: 25.0)),
                   Text(term.pinYin, style: TextStyle(fontSize: 15.0)),
+                  SpeechSpeaker(speech: term.term, language: "zh-CN")
                 ],
               ),
               Container(
@@ -73,4 +75,6 @@ class TermBlock extends StatelessWidget {
           }
         });
   }
+
+  void speak() {}
 }
