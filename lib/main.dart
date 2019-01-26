@@ -197,7 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   removeLastSelection() {
     setState(() {
-      _selectedBlocks.removeLast();
+      _selectedBlocks = List();
     });
   }
 

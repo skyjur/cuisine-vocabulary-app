@@ -23,7 +23,7 @@ class SelectedTextBar extends StatelessWidget {
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(15.0, 5.0, 15.0, 5.0),
                     child: Icon(
-                      Icons.backspace,
+                      Icons.close,
                       size: 30.0,
                       color: Colors.redAccent,
                     ))),
