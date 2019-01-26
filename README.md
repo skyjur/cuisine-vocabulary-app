@@ -8,4 +8,4 @@ Goal of this yet in-progress app is to build vocabulary for taiwanese food (and 
 
 [Download latest iOS app](https://api.codemagic.io/apps/5c1330a92a4964001862e063/builds/5c1343e0ec8f4c000d926e00/artefacts/Runner.app) (iOS is not yet tested - I don't have suitable device - so it most probably will break)
 
-![](demo.png)
+![screenshot](demo.png)

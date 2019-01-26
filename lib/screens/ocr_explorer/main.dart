@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:foodvocabularyapp/ImagePickerDialog.dart';
 import 'package:foodvocabularyapp/dictionary.dart';
 import 'package:foodvocabularyapp/screens/ocr_explorer/gestures/TouchHighlight.dart';
-import 'package:foodvocabularyapp/screens/ocr_explorer/ui/RecognizedTextOverlay.dart';
 import 'package:foodvocabularyapp/screens/ocr_explorer/ui/RecognizedTextPainter.dart';
 import 'package:foodvocabularyapp/screens/ocr_explorer/ui/TermBlock.dart';
 import 'package:foodvocabularyapp/screens/ocr_explorer/ui/ZoomView.dart';
@@ -35,20 +34,6 @@ class _PictureExplorerState extends State<PictureExplorer> {
       _result.whenComplete(() => setState(() {}));
       _selectedBlocks = List();
     });
-  }
-
-  _onTextElementSelect(NormalizedTextBlock elm) {
-    setState(() {
-      _selectedBlocks.add(elm);
-    });
-  }
-
-  Widget _recognizedTextOverlay() {
-    return RecognizedTextOverlay(
-      visionResult: _result.result.asValue.value,
-      selectedBlocks: _selectedBlocks,
-      onSelect: _onTextElementSelect,
-    );
   }
 
   Widget _showWaiting() {

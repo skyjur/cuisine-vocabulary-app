@@ -61,6 +61,5 @@ class NoSelection extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

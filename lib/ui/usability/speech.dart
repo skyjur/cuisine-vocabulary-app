@@ -19,7 +19,6 @@ class SpeechSpeakerState extends State<SpeechSpeaker> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return IconButton(
         iconSize: 35.0,
         icon: Icon(Icons.volume_up),

@@ -15,8 +15,6 @@ class RecognizedTextOverlayPainter extends CustomPainter {
 
   @override
   paint(Canvas canvas, Size size) {
-    final w = 1.0; // size.width;
-    final h = 1.0; // size.height;
     // canvas.drawPath(Path().moveTo(0.0, 0.0), paint)
     for (final block in visionResult.blocks) {
       final isSelected = selectedBlocks.contains(block);
