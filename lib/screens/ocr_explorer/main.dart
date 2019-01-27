@@ -15,8 +15,14 @@ import 'package:foodvocabularyapp/screens/ocr_explorer/ui/ZoomView.dart';
 import 'package:foodvocabularyapp/service/text_recognition.dart';
 
 class PictureExplorer extends StatefulWidget {
+  PictureExplorer({Key key, this.image}) : super(key: key);
+
+  final File image;
+
   @override
-  _PictureExplorerState createState() => new _PictureExplorerState();
+  _PictureExplorerState createState() {
+    return _PictureExplorerState()..setImage(image);
+  }
 }
 
 class _PictureExplorerState extends State<PictureExplorer> {
@@ -27,13 +33,21 @@ class _PictureExplorerState extends State<PictureExplorer> {
 
   double _currentScale = 1.0;
 
-  setImage(File image) async {
-    setState(() {
-      _image = image;
-      _result = ResultFuture(recognizeText(image.path));
-      _result.whenComplete(() => setState(() {}));
-      _selectedBlocks = List();
-    });
+  setImage(File image) {
+    _image = image;
+    _result = ResultFuture(recognizeText(image.path));
+    _result.whenComplete(() => setState(() {}));
+    _selectedBlocks = List();
+  }
+
+  @override
+  didUpdateWidget(Widget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.image != _image) {
+      setState(() {
+        setImage(widget.image);
+      });
+    }
   }
 
   Widget _showWaiting() {
@@ -75,13 +89,6 @@ class _PictureExplorerState extends State<PictureExplorer> {
     return new Scaffold(
       appBar: null,
       body: _body(), //_body(),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: () {
-          ImagePickerDialog.show(context: context, onImagePick: setImage);
-        },
-        tooltip: 'Pick Image',
-        child: Icon(Icons.add_a_photo),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 

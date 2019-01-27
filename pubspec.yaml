@@ -64,6 +64,14 @@ flutter:
     - icons/tap.png
     - icons/zoom-in.png
     - icons/swipe.png
+    - samples/1.jpg
+    - samples/2.jpg
+    - samples/3.jpg
+    - samples/4.jpg
+    - samples/5.jpg
+    - samples/6.jpg
+    - samples/7.jpg
+    - samples/8.jpg
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
